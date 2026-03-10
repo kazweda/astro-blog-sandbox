@@ -1,17 +1,29 @@
 {
-  "name": "cyan-corot",
+  "name": "astro-blog-sandbox",
   "type": "module",
   "version": "0.0.1",
+  "license": "MIT",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "check": "astro check",
+    "lint": "eslint . --max-warnings=0",
+    "test": "pnpm build && node --test tests/**/*.test.mjs"
   },
   "dependencies": {
+    "@astrojs/check": "^0.9.7",
     "@astrojs/starlight": "^0.37.7",
     "astro": "^5.6.1",
-    "sharp": "^0.34.2"
+    "sharp": "^0.34.2",
+    "starlight-blog": "^0.25.3",
+    "typescript": "^5.9.3"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.0.3",
+    "globals": "^17.4.0"
   }
 }

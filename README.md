@@ -1,49 +1,46 @@
-# Starlight Starter Kit: Basics
+# astro-blog-sandbox
 
-[![Built with Starlight](https://astro.badg.es/v2/built-with-starlight/tiny.svg)](https://starlight.astro.build)
+Minimal reproduction sandbox for feed-like paths in `starlight-blog` under `trailingSlash: "always"`.
 
-```
-pnpm create astro@latest -- --template starlight
-```
+This repo intentionally uses:
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+- Astro
+- Starlight
+- starlight-blog
 
-## 🚀 Project Structure
+## Problem
 
-Inside of your Astro + Starlight project, you'll see the following folders and files:
+starlight-blog may classify feed-like paths such as `/blog/rss.xml` as blog post slugs when `trailingSlash` is `always`, which can lead to blog-entry resolution errors instead of handling feed routes correctly.
 
-```
-.
-├── public/
-├── src/
-│   ├── assets/
-│   ├── content/
-│   │   └── docs/
-│   └── content.config.ts
-├── astro.config.mjs
-├── package.json
-└── tsconfig.json
-```
+## Reproduction
 
-Starlight looks for `.md` or `.mdx` files in the `src/content/docs/` directory. Each file is exposed as a route based on its file name.
+1. Clone this minimal repo: `https://github.com/kazweda/astro-blog-sandbox`
+2. Install dependencies: `pnpm install`
+3. Start dev server: `pnpm dev`
+4. Open `/blog/rss.xml` and `/blog/rss.xml/`
+5. Repeat with i18n path if included: `/en/blog/rss.xml`
 
-Images can be added to `src/assets/` and embedded in Markdown with a relative link.
+## Behavior
 
-Static assets, like favicons, can be placed in the `public/` directory.
+Actual:
 
-## 🧞 Commands
+Feed-like paths can be routed through blog post resolution logic and may produce a blog post not found error path.
 
-All commands are run from the root of the project, from a terminal:
+Expected:
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `pnpm install`             | Installs dependencies                            |
-| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
-| `pnpm build`           | Build your production site to `./dist/`          |
-| `pnpm preview`         | Preview your build locally, before deploying     |
-| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `pnpm astro -- --help` | Get help using the Astro CLI                     |
+Feed/index-like terminals such as `rss.xml` should never be treated as blog post pages. They should be handled as feed routes consistently, regardless of trailing slash.
 
-## 👀 Want to learn more?
+## Local Commands
 
-Check out [Starlight’s docs](https://starlight.astro.build/), read [the Astro documentation](https://docs.astro.build), or jump into the [Astro Discord server](https://astro.build/chat).
+- `pnpm dev` - Start local dev server
+- `pnpm build` - Build static output
+- `pnpm preview` - Preview built site
+- `pnpm check` - Run Astro static analysis
+- `pnpm lint` - Run ESLint
+- `pnpm test` - Build and run RSS route smoke test
+
+## GitHub Pages
+
+This repository includes a GitHub Actions workflow for Pages deployment.
+
+After enabling Pages in repository settings with source set to `GitHub Actions`, pushes to `main` will deploy the site.

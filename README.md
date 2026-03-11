@@ -39,3 +39,9 @@ Current interpretation is that this is primarily an Astro `trailingSlash` behavi
 ## GitHub Pages
 
 After enabling Pages with source `GitHub Actions`, pushes to `main` deploy the site.
+
+## Interpretation Note
+
+- The discussion is closely related to how `trailingSlash: "always"` treats endpoint-like paths such as `/blog/rss.xml`.
+- This repository does not assert a confirmed plugin defect.
+- Current framing is: behavior observed at the boundary of Astro trailingSlash semantics, combined with plugin catch-all routing.

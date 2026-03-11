@@ -1,17 +1,17 @@
 ---
 title: astro-blog-sandbox
-description: Minimal reproducible sandbox for starlight-blog feed-like path routing.
+description: Observation sandbox for trailingSlash behavior with endpoint-like paths.
 template: splash # Remove or comment out this line to display the site sidebar on this page.
 hero:
-  tagline: Reproduce feed-like route handling in starlight-blog.
+  tagline: "Observe routing behavior under trailingSlash: always."
   image:
     file: ../../assets/houston.webp
   actions:
-    - text: Reproduction Notes
+    - text: Behavior Notes
       link: /guides/repro/
       icon: right-arrow
     - text: Open blog RSS route
-      link: /blog/rss.xml
+      link: /blog/rss.xml/
       icon: external
       variant: minimal
 ---
@@ -28,9 +28,9 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
     Try /blog/ to confirm blog index and post listing are available.
   </Card>
   <Card title="Readme" icon="pencil">
-    See README.md for the exact issue text and reproduction steps.
+    See README.md for context and observation scope.
   </Card>
   <Card title="Issue" icon="external">
-    Target issue: https://github.com/netplanmyj/astro-starlight/issues/160
+    Related context: https://github.com/kazweda/astro-blog-sandbox/issues/1
   </Card>
 </CardGrid>

@@ -6,10 +6,10 @@ This repository does not claim a confirmed plugin bug. It is a neutral reproduct
 
 ## Background
 
-- Discussion origin: `netplanmyj/astro-starlight#160`
-- Related PR: `HiDeoo/starlight-blog#196` (closed)
-- Related issue: `HiDeoo/starlight-blog#198`
-- Maintainer interpretation referenced Astro behavior: `withastro/astro#9674` comment `1969265501`
+- Discussion origin: [netplanmyj/astro-starlight#160](https://github.com/netplanmyj/astro-starlight/issues/160)
+- Related PR: [HiDeoo/starlight-blog#196](https://github.com/HiDeoo/starlight-blog/pull/196) (closed)
+- Related issue: [HiDeoo/starlight-blog#198](https://github.com/HiDeoo/starlight-blog/issues/198)
+- Maintainer interpretation referenced Astro behavior: [withastro/astro#9674 (comment)](https://github.com/withastro/astro/issues/9674#issuecomment-1969265501)
 
 ## Reproduction
 

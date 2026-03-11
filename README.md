@@ -1,34 +1,31 @@
 # astro-blog-sandbox
 
-Minimal reproduction sandbox for feed-like paths in `starlight-blog` under `trailingSlash: "always"`.
+Observation sandbox for Astro `trailingSlash: "always"` behavior with endpoint-like paths in a Starlight + starlight-blog setup.
 
-This repo intentionally uses:
+This repository does not claim a confirmed plugin bug. It is a neutral reproduction and behavior record.
 
-- Astro
-- Starlight
-- starlight-blog
+## Background
 
-## Problem
-
-starlight-blog may classify feed-like paths such as `/blog/rss.xml` as blog post slugs when `trailingSlash` is `always`, which can lead to blog-entry resolution errors instead of handling feed routes correctly.
+- Discussion origin: `netplanmyj/astro-starlight#160`
+- Related PR: `HiDeoo/starlight-blog#196` (closed)
+- Related issue: `HiDeoo/starlight-blog#198`
+- Maintainer interpretation referenced Astro behavior: `withastro/astro#9674` comment `1969265501`
 
 ## Reproduction
 
-1. Clone this minimal repo: `https://github.com/kazweda/astro-blog-sandbox`
-2. Install dependencies: `pnpm install`
-3. Start dev server: `pnpm dev`
-4. Open `/blog/rss.xml` and `/blog/rss.xml/`
-5. Repeat with i18n path if included: `/en/blog/rss.xml`
+1. Clone: `https://github.com/kazweda/astro-blog-sandbox`
+2. Install: `pnpm install`
+3. Run dev server: `pnpm dev`
+4. Open both paths: `/blog/rss.xml/` and `/blog/rss.xml`
 
-## Behavior
+## Observed Behavior
 
-Actual:
+- `/blog/rss.xml/` behaves as the canonical path and returns RSS content.
+- `/blog/rss.xml` can behave differently under `trailingSlash: "always"` and may result in a 404 path in this setup.
 
-Feed-like paths can be routed through blog post resolution logic and may produce a blog post not found error path.
+## Interpretation
 
-Expected:
-
-Feed/index-like terminals such as `rss.xml` should never be treated as blog post pages. They should be handled as feed routes consistently, regardless of trailing slash.
+Current interpretation is that this is primarily an Astro `trailingSlash` behavior boundary, not a confirmed starlight-blog bug.
 
 ## Local Commands
 
@@ -41,6 +38,4 @@ Feed/index-like terminals such as `rss.xml` should never be treated as blog post
 
 ## GitHub Pages
 
-This repository includes a GitHub Actions workflow for Pages deployment.
-
-After enabling Pages in repository settings with source set to `GitHub Actions`, pushes to `main` will deploy the site.
+After enabling Pages with source `GitHub Actions`, pushes to `main` deploy the site.

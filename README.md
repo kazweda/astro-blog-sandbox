@@ -20,12 +20,20 @@ This repository does not claim a confirmed plugin bug. It is a neutral reproduct
 
 ## Observed Behavior
 
-- `/blog/rss.xml/` behaves as the canonical path and returns RSS content.
-- `/blog/rss.xml` can behave differently under `trailingSlash: "always"` and may result in a 404 path in this setup.
+| Path | Dev server | Production (GitHub Pages) |
+|------|-----------|--------------------------|
+| `/blog/rss.xml/` | 200 — RSS XML | 404 |
+| `/blog/rss.xml` | 404 — Starlight 404 page | 200 — RSS XML |
+
+Dev and production behave in opposite ways for these two paths.
+
+The `Blog post with slug 'blog/rss.xml' not found` runtime error (claimed in [netplanmyj/astro-starlight#160](https://github.com/netplanmyj/astro-starlight/issues/160)) was **not reproduced** in this repository. The 404 in dev is a standard Starlight 404 page, not a blog post misidentification error.
+
+See [issue #3](https://github.com/kazweda/astro-blog-sandbox/issues/3) for the full analysis.
 
 ## Interpretation
 
-Current interpretation is that this is primarily an Astro `trailingSlash` behavior boundary, not a confirmed starlight-blog bug.
+The dev/production inconsistency appears to stem from how Astro's `trailingSlash: "always"` interacts with the `[...prefix]/rss.xml` endpoint registered by starlight-blog. In dev the route is served at the trailing-slash URL; in production the static file has no trailing slash. This is a behavior boundary issue, not a confirmed plugin logic bug.
 
 ## Local Commands
 
@@ -40,8 +48,3 @@ Current interpretation is that this is primarily an Astro `trailingSlash` behavi
 
 After enabling Pages with source `GitHub Actions`, pushes to `main` deploy the site.
 
-## Interpretation Note
-
-- The discussion is closely related to how `trailingSlash: "always"` treats endpoint-like paths such as `/blog/rss.xml`.
-- This repository does not assert a confirmed plugin defect.
-- Current framing is: behavior observed at the boundary of Astro trailingSlash semantics, combined with plugin catch-all routing.

@@ -21,14 +21,14 @@ This repository does not claim a confirmed plugin bug. It is a neutral reproduct
 
 ## Observed Behavior
 
-Verified with **astro 6.0.5 + starlight-blog 0.26.1**:
-
 | Path | Dev server | Production (static build) |
 |------|-----------|--------------------------|
 | `/blog/rss.xml/` | 200 — RSS XML | 404 |
 | `/blog/rss.xml` | 404 + `Blog post with slug 'blog/rss.xml' not found.` error | 200 — RSS XML |
 
 Dev and production behave in opposite ways for these two paths.
+
+> **Note:** The behavior above (including the `Blog post not found` error) was verified with astro 6.0.5 + starlight-blog 0.26.1 in [netplanmyj/astro-starlight#194](https://github.com/netplanmyj/astro-starlight/issues/194). This sandbox repo uses astro ^5.6.1 + starlight-blog ^0.25.3 and reproduces the core dev/prod path reversal; the specific error message may differ by version.
 
 See [issue #3](https://github.com/kazweda/astro-blog-sandbox/issues/3) and [netplanmyj/astro-starlight#194](https://github.com/netplanmyj/astro-starlight/issues/194) for the full analysis.
 
@@ -52,7 +52,7 @@ Both upstream maintainers have confirmed this is Astro's intended behavior, not 
 
 ## Workaround
 
-`src/pages/404.astro` implements a client-side JS redirect to handle the dev server case:
+A client-side JS redirect in a custom `404.astro` page can handle the dev server case. This approach is implemented in the [netplanmyj/astro-starlight](https://github.com/netplanmyj/astro-starlight) repository (not in this sandbox):
 
 ```js
 const rssRedirectMap = {

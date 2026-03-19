@@ -7,9 +7,10 @@ This repository does not claim a confirmed plugin bug. It is a neutral reproduct
 ## Background
 
 - Discussion origin: [netplanmyj/astro-starlight#160](https://github.com/netplanmyj/astro-starlight/issues/160)
+- Refined analysis (Astro 6.0 confirmed): [netplanmyj/astro-starlight#194](https://github.com/netplanmyj/astro-starlight/issues/194)
 - Related PR: [HiDeoo/starlight-blog#196](https://github.com/HiDeoo/starlight-blog/pull/196) (closed)
 - Related issue: [HiDeoo/starlight-blog#198](https://github.com/HiDeoo/starlight-blog/issues/198)
-- Maintainer interpretation referenced Astro behavior: [withastro/astro#9674 (comment)](https://github.com/withastro/astro/issues/9674#issuecomment-1969265501)
+- Astro core maintainer comment: [withastro/astro#9674 (comment)](https://github.com/withastro/astro/issues/9674#issuecomment-1969265501)
 
 ## Reproduction
 
@@ -20,20 +21,48 @@ This repository does not claim a confirmed plugin bug. It is a neutral reproduct
 
 ## Observed Behavior
 
-| Path | Dev server | Production (GitHub Pages) |
+| Path | Dev server | Production (static build) |
 |------|-----------|--------------------------|
 | `/blog/rss.xml/` | 200 — RSS XML | 404 |
-| `/blog/rss.xml` | 404 — Starlight 404 page | 200 — RSS XML |
+| `/blog/rss.xml` | 404 + `Blog post with slug 'blog/rss.xml' not found.` error | 200 — RSS XML |
 
 Dev and production behave in opposite ways for these two paths.
 
-The `Blog post with slug 'blog/rss.xml' not found` runtime error (claimed in [netplanmyj/astro-starlight#160](https://github.com/netplanmyj/astro-starlight/issues/160)) was **not reproduced** in this repository. The 404 in dev is a standard Starlight 404 page, not a blog post misidentification error.
+> **Note:** The behavior above (including the `Blog post not found` error) was verified with astro 6.0.5 + starlight-blog 0.26.1 in [netplanmyj/astro-starlight#194](https://github.com/netplanmyj/astro-starlight/issues/194). This sandbox repo uses astro ^5.6.1 + starlight-blog ^0.25.3 and reproduces the core dev/prod path reversal; the specific error message may differ by version.
 
-See [issue #3](https://github.com/kazweda/astro-blog-sandbox/issues/3) for the full analysis.
+See [issue #3](https://github.com/kazweda/astro-blog-sandbox/issues/3) and [netplanmyj/astro-starlight#194](https://github.com/netplanmyj/astro-starlight/issues/194) for the full analysis.
 
-## Interpretation
+## Root Cause
 
-The dev/production inconsistency appears to stem from how Astro's `trailingSlash: "always"` interacts with the `[...prefix]/rss.xml` endpoint registered by starlight-blog. In dev the route is served at the trailing-slash URL; in production the static file has no trailing slash. This is a behavior boundary issue, not a confirmed plugin logic bug.
+Under `trailingSlash: 'always'`, the dev server only recognizes the injected route `/[...prefix]/rss.xml` at the trailing-slash URL. Without a trailing slash, the request falls through to the catch-all `/[...prefix]/[...page]` route and is mistakenly treated as a blog post lookup — producing the `Blog post with slug 'blog/rss.xml' not found` error.
+
+In production, the static file `/blog/rss.xml` is served directly and returns 200. No trailing slash is involved.
+
+Note: issue #160 incorrectly attributed the error to `isAnyBlogPostPage()` misidentification. The actual cause is routing priority between the injected RSS route and the catch-all blog route under `trailingSlash: 'always'`.
+
+## Upstream Confirmation (by Design)
+
+Both upstream maintainers have confirmed this is Astro's intended behavior, not a bug:
+
+- **Astro core maintainer** ([withastro/astro#9674](https://github.com/withastro/astro/issues/9674#issuecomment-1969265501)):
+  > It's not the first time users were 'surprised' that trailingSlash was affecting endpoints too, especially the ones that emit images. We will discuss if it's worth to allowlist 'known' extensions. Still, that's not a bug.
+
+- **starlight-blog maintainer** ([HiDeoo/starlight-blog#198](https://github.com/HiDeoo/starlight-blog/issues/198#issuecomment-4033381332)):
+  > The described behavior, as surprising as it may seem, is actually the expected one in Astro for endpoints as described in this issue, even the different behavior between the dev server and the actual build output when building for production.
+
+## Workaround
+
+A client-side JS redirect in a custom `404.astro` page can handle the dev server case. This approach is implemented in the [netplanmyj/astro-starlight](https://github.com/netplanmyj/astro-starlight) repository (not in this sandbox):
+
+```js
+const rssRedirectMap = {
+  '/blog/rss.xml': '/blog/rss.xml/',
+  '/en/blog/rss.xml': '/en/blog/rss.xml/',
+};
+```
+
+In dev: `/blog/rss.xml` → 404.astro → redirects to `/blog/rss.xml/` (200).
+In production: `/blog/rss.xml` is served as a static file (200) — the workaround is not needed.
 
 ## Local Commands
 
@@ -46,5 +75,11 @@ The dev/production inconsistency appears to stem from how Astro's `trailingSlash
 
 ## GitHub Pages
 
+**Live site:** https://kazweda.github.io/astro-blog-sandbox/
+
 After enabling Pages with source `GitHub Actions`, pushes to `main` deploy the site.
+
+You can verify the production behavior directly:
+- [`/blog/rss.xml`](https://kazweda.github.io/astro-blog-sandbox/blog/rss.xml) — returns 200 RSS XML
+- [`/blog/rss.xml/`](https://kazweda.github.io/astro-blog-sandbox/blog/rss.xml/) — returns 404
 

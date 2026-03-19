@@ -75,5 +75,11 @@ In production: `/blog/rss.xml` is served as a static file (200) — the workarou
 
 ## GitHub Pages
 
+**Live site:** https://kazweda.github.io/astro-blog-sandbox/
+
 After enabling Pages with source `GitHub Actions`, pushes to `main` deploy the site.
+
+You can verify the production behavior directly:
+- [`/blog/rss.xml`](https://kazweda.github.io/astro-blog-sandbox/blog/rss.xml) — returns 200 RSS XML
+- [`/blog/rss.xml/`](https://kazweda.github.io/astro-blog-sandbox/blog/rss.xml/) — returns 404
 
